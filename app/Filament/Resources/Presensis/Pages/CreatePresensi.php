@@ -8,4 +8,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreatePresensi extends CreateRecord
 {
     protected static string $resource = PresensiResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

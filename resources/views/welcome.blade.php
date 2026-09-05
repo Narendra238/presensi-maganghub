@@ -222,11 +222,94 @@
             </div>
         </div>
 
+        <!-- KALENDER PERIODE MONEV MAGANGHUB -->
+        <div class="mt-8 bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800/90 rounded-3xl p-5 sm:p-7 shadow-sm">
+            
+            <!-- Header Navigasi Periode -->
+            <div class="flex items-center justify-between gap-3 mb-6">
+                <button 
+                    id="prev-period-btn" 
+                    type="button" 
+                    class="p-2 sm:px-3 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-1.5 text-xs font-semibold active:scale-95"
+                    title="Periode Sebelumnya"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+                    <span class="hidden sm:inline">Periode Lalu</span>
+                </button>
+
+                <div class="text-center">
+                    <h2 id="period-title" class="text-base sm:text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                        Periode 1
+                    </h2>
+                    <p id="period-range" class="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400 mt-0.5">
+                        10 Agu 2026 - 9 Sep 2026
+                    </p>
+                </div>
+
+                <button 
+                    id="next-period-btn" 
+                    type="button" 
+                    class="p-2 sm:px-3 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-1.5 text-xs font-semibold active:scale-95"
+                    title="Periode Selanjutnya"
+                >
+                    <span class="hidden sm:inline">Periode Berikutnya</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+                </button>
+            </div>
+
+            <!-- Wrapper Tabel Kalender -->
+            <div class="border border-slate-200/80 dark:border-slate-800 rounded-2xl p-3 sm:p-5 bg-slate-50/60 dark:bg-slate-900/50">
+                <!-- Header Hari: Sen, Sel, Rab, Kam, Jum, Sab, Min -->
+                <div class="grid grid-cols-7 gap-1 sm:gap-2 text-center pb-3 mb-3 border-b border-slate-200/80 dark:border-slate-800">
+                    <div class="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200">Sen</div>
+                    <div class="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200">Sel</div>
+                    <div class="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200">Rab</div>
+                    <div class="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200">Kam</div>
+                    <div class="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200">Jum</div>
+                    <div class="text-xs sm:text-sm font-bold text-slate-400 dark:text-slate-500">Sab</div>
+                    <div class="text-xs sm:text-sm font-bold text-slate-400 dark:text-slate-500">Min</div>
+                </div>
+
+                <!-- Grid Tanggal Dinamis -->
+                <div id="calendar-grid" class="grid grid-cols-7 gap-1 sm:gap-2">
+                    <!-- Tanggal digenerate otomatis oleh JavaScript -->
+                </div>
+            </div>
+
+            <!-- Keterangan & Ringkasan -->
+            <div class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                <!-- Legenda Status -->
+                <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 sm:gap-5 text-slate-600 dark:text-slate-400">
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-4 h-4 rounded bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-[10px]">✓</span>
+                        <span>Terisi</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-2 h-2 bg-slate-400 dark:bg-slate-600 rounded-[1px]"></span>
+                        <span>Libur / Weekend</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-2 h-2 bg-blue-500 rotate-45 rounded-[1px]"></span>
+                        <span>Hari Ini</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-2 h-2 border border-slate-300 dark:border-slate-700 rounded-full"></span>
+                        <span>Masa Depan</span>
+                    </div>
+                </div>
+
+                <!-- Statistik Periode Aktif -->
+                <div id="period-stats" class="text-xs font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/60 px-3 py-1.5 rounded-xl border border-slate-200/50 dark:border-slate-700/50 whitespace-nowrap">
+                    Memuat data...
+                </div>
+            </div>
+        </div>
+
         <!-- Shortcut & Rules Card -->
         <div class="mt-6 bg-slate-100/70 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 text-xs text-slate-500 dark:text-slate-400 flex flex-col sm:flex-row items-center justify-between gap-3">
             <div class="flex items-center gap-2 text-center sm:text-left">
                 <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <span>Validasi teks aktif: <strong>Uraian Aktivitas</strong> & <strong>Pembelajaran</strong> minimal 100 karakter.</span>
+                <span>Validasi aktif: Tanggal unik (anti-duplikat) & Sabtu/Minggu libur presensi.</span>
             </div>
             <a href="/admin/presensis" class="text-blue-600 dark:text-blue-400 hover:underline font-medium whitespace-nowrap">
                 Buka Tabel Lengkap &rarr;
@@ -239,8 +322,9 @@
         &copy; {{ date('Y') }} Muhammad Narendra Hawari &bull; Monev MagangHub BDI Yogyakarta Tracker
     </footer>
 
-    <!-- Script Theme Toggle Dark Mode -->
+    <!-- Script Theme Toggle & Kalender Periode -->
     <script>
+        // --- 1. Theme Toggle Dark Mode ---
         const themeToggleBtn = document.getElementById('theme-toggle');
         const sunIcon = document.getElementById('sun-icon');
         const moonIcon = document.getElementById('moon-icon');
@@ -250,12 +334,12 @@
                 sunIcon.classList.remove('hidden');
                 moonIcon.classList.add('hidden');
             } else {
+                sunIcon.classList.hidden = true;
                 sunIcon.classList.add('hidden');
                 moonIcon.classList.remove('hidden');
             }
         }
 
-        // Cek LocalStorage atau Preferensi Sistem
         if (localStorage.getItem('color-theme') === 'light' || (!('color-theme' in localStorage) && !window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.remove('dark');
         } else {
@@ -263,7 +347,6 @@
         }
         updateIcons();
 
-        // Event Klik Tombol
         themeToggleBtn.addEventListener('click', function() {
             if (document.documentElement.classList.contains('dark')) {
                 document.documentElement.classList.remove('dark');
@@ -274,6 +357,171 @@
             }
             updateIcons();
         });
+
+        // --- 2. Kalender Periode MagangHub ---
+        const tanggalTerisiList = @json($tanggalTerisi ?? []);
+
+        // 6 Periode Magang
+        const periods = [
+            { id: 1, name: 'Periode 1', start: '2026-08-10', end: '2026-09-09', label: '10 Agu 2026 - 9 Sep 2026' },
+            { id: 2, name: 'Periode 2', start: '2026-09-10', end: '2026-10-09', label: '10 Sep 2026 - 9 Okt 2026' },
+            { id: 3, name: 'Periode 3', start: '2026-10-10', end: '2026-11-09', label: '10 Okt 2026 - 9 Nov 2026' },
+            { id: 4, name: 'Periode 4', start: '2026-11-10', end: '2026-12-09', label: '10 Nov 2026 - 9 Des 2026' },
+            { id: 5, name: 'Periode 5', start: '2026-12-10', end: '2027-01-09', label: '10 Des 2026 - 9 Jan 2027' },
+            { id: 6, name: 'Periode 6', start: '2027-01-10', end: '2027-02-09', label: '10 Jan 2027 - 9 Feb 2027' },
+        ];
+
+        // Format tanggal hari ini (YYYY-MM-DD)
+        const now = new Date();
+        const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
+        // Tentukan periode aktif awal berdasarkan tanggal hari ini
+        let currentPeriodIndex = periods.findIndex(p => todayStr >= p.start && todayStr <= p.end);
+        if (currentPeriodIndex === -1) {
+            currentPeriodIndex = 0; // Default ke Periode 1 jika belum atau sudah lewat
+        }
+
+        const periodTitleEl = document.getElementById('period-title');
+        const periodRangeEl = document.getElementById('period-range');
+        const prevBtn = document.getElementById('prev-period-btn');
+        const nextBtn = document.getElementById('next-period-btn');
+        const calendarGridEl = document.getElementById('calendar-grid');
+        const periodStatsEl = document.getElementById('period-stats');
+
+        function renderCalendar(index) {
+            const period = periods[index];
+            periodTitleEl.textContent = period.name;
+            periodRangeEl.textContent = period.label;
+
+            prevBtn.disabled = (index === 0);
+            nextBtn.disabled = (index === periods.length - 1);
+
+            calendarGridEl.innerHTML = '';
+
+            const startDate = new Date(period.start + 'T00:00:00');
+            const endDate = new Date(period.end + 'T00:00:00');
+
+            // Offset hari awal: 0 = Senin, 6 = Minggu
+            const startDay = (startDate.getDay() + 6) % 7;
+
+            // Kotak kosong di awal baris pertama (padding)
+            for (let i = 0; i < startDay; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'h-12 sm:h-14 rounded-xl opacity-0 pointer-events-none';
+                calendarGridEl.appendChild(emptyCell);
+            }
+
+            let totalWorkdays = 0;
+            let filledWorkdays = 0;
+            let current = new Date(startDate);
+            let totalCells = startDay;
+
+            while (current <= endDate) {
+                const dayNum = current.getDate();
+                const yyyy = current.getFullYear();
+                const mm = String(current.getMonth() + 1).padStart(2, '0');
+                const dd = String(current.getDate()).padStart(2, '0');
+                const dateStr = `${yyyy}-${mm}-${dd}`;
+
+                const dayOfWeek = (current.getDay() + 6) % 7; // 0=Sen, ..., 5=Sab, 6=Min
+                const isWeekend = (dayOfWeek === 5 || dayOfWeek === 6);
+                const isToday = (dateStr === todayStr);
+                const isPast = (dateStr < todayStr);
+                const isFuture = (dateStr > todayStr);
+                const isFilled = tanggalTerisiList.includes(dateStr);
+
+                if (!isWeekend) {
+                    totalWorkdays++;
+                    if (isFilled) {
+                        filledWorkdays++;
+                    }
+                }
+
+                const cell = document.createElement('div');
+                let cellClasses = 'h-12 sm:h-14 rounded-xl flex flex-col items-center justify-between py-1.5 sm:py-2 px-1 text-center transition border ';
+                let indicatorHtml = '';
+
+                if (isToday) {
+                    cellClasses += 'border-blue-500 bg-blue-50/80 dark:bg-blue-950/40 shadow-sm ring-2 ring-blue-500/20 ';
+                } else {
+                    cellClasses += 'border-slate-200/60 dark:border-slate-800/80 bg-white dark:bg-slate-800/40 hover:bg-slate-100/80 dark:hover:bg-slate-800/80 ';
+                }
+
+                let numClasses = 'text-xs sm:text-sm font-semibold leading-none ';
+                if (isToday) {
+                    numClasses += 'text-blue-600 dark:text-blue-400 font-extrabold ';
+                } else if (isWeekend) {
+                    numClasses += 'text-slate-400 dark:text-slate-500 ';
+                } else {
+                    numClasses += 'text-slate-800 dark:text-slate-200 ';
+                }
+
+                // Tentukan Ikon Status
+                if (isFilled) {
+                    indicatorHtml = `
+                        <div class="flex items-center justify-center text-emerald-500 dark:text-emerald-400">
+                            <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                            </svg>
+                        </div>
+                    `;
+                } else if (isWeekend) {
+                    indicatorHtml = `<span class="inline-block w-1.5 h-1.5 bg-slate-400 dark:bg-slate-600 rounded-[1px]" title="Libur Weekend"></span>`;
+                } else if (isToday) {
+                    indicatorHtml = `<span class="inline-block w-2 h-2 bg-blue-500 rotate-45 rounded-[1px] shadow-sm animate-pulse" title="Hari Ini"></span>`;
+                } else if (isPast) {
+                    indicatorHtml = `<span class="inline-block w-1.5 h-1.5 bg-slate-400 dark:bg-slate-600 rounded-[1px]" title="Tidak Ada Presensi"></span>`;
+                } else {
+                    indicatorHtml = `<span class="inline-block w-1.5 h-1.5 border border-slate-300 dark:border-slate-700 rounded-full" title="Masa Depan"></span>`;
+                }
+
+                cell.className = cellClasses;
+                cell.title = `Tanggal: ${dateStr}${isWeekend ? ' (Weekend)' : (isFilled ? ' (Presensi Terisi)' : (isToday ? ' (Hari Ini)' : ''))}`;
+                cell.innerHTML = `
+                    <span class="${numClasses}">${dayNum}</span>
+                    <div class="h-4 flex items-center justify-center">
+                        ${indicatorHtml}
+                    </div>
+                `;
+
+                calendarGridEl.appendChild(cell);
+                totalCells++;
+
+                // Lanjut ke hari berikutnya
+                current.setDate(current.getDate() + 1);
+            }
+
+            // Kotak kosong penutup di baris terakhir jika tidak pas 7 kolom
+            const remainder = totalCells % 7;
+            if (remainder !== 0) {
+                for (let i = 0; i < (7 - remainder); i++) {
+                    const emptyCell = document.createElement('div');
+                    emptyCell.className = 'h-12 sm:h-14 rounded-xl opacity-0 pointer-events-none';
+                    calendarGridEl.appendChild(emptyCell);
+                }
+            }
+
+            // Tampilkan Ringkasan Statistik
+            const percentage = totalWorkdays > 0 ? Math.round((filledWorkdays / totalWorkdays) * 100) : 0;
+            periodStatsEl.innerHTML = `Presensi: <strong class="text-slate-800 dark:text-slate-100">${filledWorkdays}</strong> / ${totalWorkdays} Hari Kerja (<span class="text-emerald-600 dark:text-emerald-400 font-bold">${percentage}%</span>)`;
+        }
+
+        prevBtn.addEventListener('click', () => {
+            if (currentPeriodIndex > 0) {
+                currentPeriodIndex--;
+                renderCalendar(currentPeriodIndex);
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentPeriodIndex < periods.length - 1) {
+                currentPeriodIndex++;
+                renderCalendar(currentPeriodIndex);
+            }
+        });
+
+        // Jalankan render awal
+        renderCalendar(currentPeriodIndex);
     </script>
 </body>
 </html>

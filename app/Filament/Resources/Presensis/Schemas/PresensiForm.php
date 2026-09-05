@@ -22,6 +22,26 @@ class PresensiForm
                     ->label('Tanggal Kegiatan')
                     ->default(now())
                     ->required()
+                    ->unique(
+                        table: 'presensis',
+                        column: 'tanggal',
+                        ignorable: fn ($record) => $record,
+                        modifyRuleUsing: fn (\Illuminate\Validation\Rules\Unique $rule) => $rule->where('user_id', Auth::id()),
+                    )
+                    ->rules([
+                        fn () => function (string $attribute, $value, \Closure $fail) {
+                            if (! $value) {
+                                return;
+                            }
+                            $date = \Carbon\Carbon::parse($value);
+                            if ($date->isSaturday() || $date->isSunday()) {
+                                $fail('Hari Sabtu dan Minggu adalah hari libur. Tidak perlu mengisi presensi.');
+                            }
+                        },
+                    ])
+                    ->validationMessages([
+                        'unique' => 'Presensi pada tanggal ini sudah pernah diisi! Tidak bisa memasukkan tanggal yang sama.',
+                    ])
                     ->columnSpanFull(),
 
                 Textarea::make('uraian_aktivitas')
