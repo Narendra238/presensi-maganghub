@@ -34,8 +34,18 @@ class PresensiForm
                                 return;
                             }
                             $date = \Carbon\Carbon::parse($value);
+                            $dateStr = $date->format('Y-m-d');
+                            $holidays = config('holidays', []);
+
+                            // 1. Cek Weekend (Sabtu & Minggu)
                             if ($date->isSaturday() || $date->isSunday()) {
                                 $fail('Hari Sabtu dan Minggu adalah hari libur. Tidak perlu mengisi presensi.');
+                                return;
+                            }
+
+                            // 2. Cek Hari Libur Nasional & Cuti Bersama
+                            if (isset($holidays[$dateStr])) {
+                                $fail("Tanggal ini adalah hari libur ({$holidays[$dateStr]}). Tidak perlu mengisi presensi.");
                             }
                         },
                     ])

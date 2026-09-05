@@ -360,6 +360,7 @@
 
         // --- 2. Kalender Periode MagangHub ---
         const tanggalTerisiList = @json($tanggalTerisi ?? []);
+        const hariLiburList = @json($hariLibur ?? []);
 
         // 6 Periode Magang
         const periods = [
@@ -425,12 +426,14 @@
 
                 const dayOfWeek = (current.getDay() + 6) % 7; // 0=Sen, ..., 5=Sab, 6=Min
                 const isWeekend = (dayOfWeek === 5 || dayOfWeek === 6);
+                const isHoliday = Boolean(hariLiburList[dateStr]);
+                const holidayName = isHoliday ? hariLiburList[dateStr] : '';
                 const isToday = (dateStr === todayStr);
                 const isPast = (dateStr < todayStr);
                 const isFuture = (dateStr > todayStr);
                 const isFilled = tanggalTerisiList.includes(dateStr);
 
-                if (!isWeekend) {
+                if (!isWeekend && !isHoliday) {
                     totalWorkdays++;
                     if (isFilled) {
                         filledWorkdays++;
@@ -443,6 +446,8 @@
 
                 if (isToday) {
                     cellClasses += 'border-blue-500 bg-blue-50/80 dark:bg-blue-950/40 shadow-sm ring-2 ring-blue-500/20 ';
+                } else if (isHoliday) {
+                    cellClasses += 'border-rose-200/60 dark:border-rose-900/40 bg-rose-50/40 dark:bg-rose-950/20 hover:bg-rose-100/60 dark:hover:bg-rose-950/40 ';
                 } else {
                     cellClasses += 'border-slate-200/60 dark:border-slate-800/80 bg-white dark:bg-slate-800/40 hover:bg-slate-100/80 dark:hover:bg-slate-800/80 ';
                 }
@@ -450,6 +455,8 @@
                 let numClasses = 'text-xs sm:text-sm font-semibold leading-none ';
                 if (isToday) {
                     numClasses += 'text-blue-600 dark:text-blue-400 font-extrabold ';
+                } else if (isHoliday) {
+                    numClasses += 'text-rose-500 dark:text-rose-400 font-bold ';
                 } else if (isWeekend) {
                     numClasses += 'text-slate-400 dark:text-slate-500 ';
                 } else {
@@ -465,6 +472,8 @@
                             </svg>
                         </div>
                     `;
+                } else if (isHoliday) {
+                    indicatorHtml = `<span class="inline-block w-1.5 h-1.5 bg-rose-500 dark:bg-rose-400 rounded-[1px]" title="Libur: ${holidayName}"></span>`;
                 } else if (isWeekend) {
                     indicatorHtml = `<span class="inline-block w-1.5 h-1.5 bg-slate-400 dark:bg-slate-600 rounded-[1px]" title="Libur Weekend"></span>`;
                 } else if (isToday) {
@@ -476,7 +485,7 @@
                 }
 
                 cell.className = cellClasses;
-                cell.title = `Tanggal: ${dateStr}${isWeekend ? ' (Weekend)' : (isFilled ? ' (Presensi Terisi)' : (isToday ? ' (Hari Ini)' : ''))}`;
+                cell.title = `Tanggal: ${dateStr}${isHoliday ? ` (Libur: ${holidayName})` : (isWeekend ? ' (Weekend)' : (isFilled ? ' (Presensi Terisi)' : (isToday ? ' (Hari Ini)' : '')))}`;
                 cell.innerHTML = `
                     <span class="${numClasses}">${dayNum}</span>
                     <div class="h-4 flex items-center justify-center">

@@ -30,5 +30,7 @@ Route::get('/', function () {
             ->toArray();
     }
 
-    return view('welcome', compact('sudahPresensi', 'totalLaporan', 'laporanTerbaru', 'tanggalTerisi'));
+    $hariLibur = config('holidays', []);
+
+    return view('welcome', compact('sudahPresensi', 'totalLaporan', 'laporanTerbaru', 'tanggalTerisi', 'hariLibur'));
 });
