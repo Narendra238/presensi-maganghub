@@ -93,7 +93,7 @@
         <div class="mb-8">
             @if(isset($sudahPresensi) && $sudahPresensi)
                 <!-- Kondisi: Sudah Mengisi -->
-                <div class="p-4 sm:p-5 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl flex items-start sm:items-center justify-between gap-4 backdrop-blur-sm">
+                <div class="p-4 sm:p-5 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 backdrop-blur-sm">
                     <div class="flex items-center gap-3.5">
                         <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center flex-shrink-0">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,15 +102,16 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-sm sm:text-base text-emerald-900 dark:text-emerald-300">
-                                Laporan Presensi Hari Ini Sudah Tersimpan!
+                                Anda sudah mengisi presensi hari ini!
                             </h3>
                             <p class="text-xs text-emerald-700 dark:text-emerald-400/90 mt-0.5">
                                 Logbook aktivitas tanggal {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }} sudah tersimpan rapi di database lokal.
                             </p>
                         </div>
                     </div>
-                    <a href="/admin/presensis" class="hidden sm:inline-flex items-center text-xs font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-500/20 hover:bg-emerald-500/30 px-3 py-2 rounded-lg transition">
-                        Lihat Riwayat &rarr;
+                    <a href="/admin/presensis" class="inline-flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition shadow-sm shadow-emerald-600/20 whitespace-nowrap self-stretch sm:self-auto text-center">
+                        <span>Lihat Riwayat</span>
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </a>
                 </div>
             @else

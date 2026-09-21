@@ -23,6 +23,7 @@ Route::get('/', function () {
             ->toArray();
     } else {
         // Jika belum login / publik (tampilkan total data yang ada di database)
+        $sudahPresensi = Presensi::whereDate('tanggal', Carbon::today())->exists();
         $totalLaporan = Presensi::count();
         $laporanTerbaru = Presensi::latest('tanggal')->first();
         $tanggalTerisi = Presensi::pluck('tanggal')
