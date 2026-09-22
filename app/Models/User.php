@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasAvatar;
 use Filament\Panel;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -14,7 +15,7 @@ use Illuminate\Notifications\Notifiable;
 
 #[Fillable(['name', 'email', 'password', 'role'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, HasAvatar
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
@@ -41,5 +42,14 @@ class User extends Authenticatable implements FilamentUser
     public function presensis()
     {
         return $this->hasMany(Presensi::class);
+    }
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        if (file_exists(public_path('images/PP.png'))) {
+            return asset('images/PP.png');
+        }
+
+        return null;
     }
 }

@@ -9,7 +9,10 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\Navigation\NavigationItem;
 use Filament\Support\Colors\Color;
+use Filament\Support\Icons\Heroicon;
+use App\Filament\Pages\Auth\EditProfile;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -28,10 +31,18 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->profile(EditProfile::class, isSimple: false)
             ->homeUrl('/')
             ->brandName('Balai Diklat Industri Yogyakarta')
             ->darkMode(true)
             ->themeSwitcher(true)
+            ->navigationItems([
+                NavigationItem::make('Profil Saya')
+                    ->url(fn (): string => \Filament\Facades\Filament::getProfileUrl())
+                    ->icon(Heroicon::OutlinedUserCircle)
+                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.auth.profile'))
+                    ->sort(99),
+            ])
             ->colors([
                 'primary' => Color::Blue,
             ])
