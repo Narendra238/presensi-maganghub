@@ -29,6 +29,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->homeUrl('/')
+            ->brandName('Balai Diklat Industri Yogyakarta')
             ->darkMode(true)
             ->themeSwitcher(true)
             ->colors([
