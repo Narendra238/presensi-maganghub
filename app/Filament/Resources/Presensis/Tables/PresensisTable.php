@@ -22,12 +22,12 @@ class PresensisTable
 
                 TextColumn::make('uraian_aktivitas')
                     ->label('Aktivitas')
-                    ->limit(50)
+                    ->limit(30)
                     ->searchable(),
 
                 TextColumn::make('pembelajaran')
                     ->label('Pembelajaran')
-                    ->limit(50),
+                    ->limit(30),
 
                 TextColumn::make('kendala')
                     ->label('Kendala')
@@ -48,6 +48,7 @@ class PresensisTable
                 EditAction::make(),
                 DeleteAction::make(),
             ])
+            ->recordUrl(null)
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
