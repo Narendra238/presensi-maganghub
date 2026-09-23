@@ -20,6 +20,23 @@ class PresensisTable
                     ->date('d M Y')
                     ->sortable(),
 
+                TextColumn::make('kehadiran')
+                    ->label('Status')
+                    ->badge()
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'hadir' => 'Hadir',
+                        'tidak_hadir_dengan_keterangan' => 'Tidak Hadir (Keterangan)',
+                        'tidak_hadir_tanpa_keterangan' => 'Tidak Hadir (Tanpa Keterangan)',
+                        default => $state,
+                    })
+                    ->color(fn (string $state): string => match ($state) {
+                        'hadir' => 'success',
+                        'tidak_hadir_dengan_keterangan' => 'warning',
+                        'tidak_hadir_tanpa_keterangan' => 'danger',
+                        default => 'gray',
+                    })
+                    ->sortable(),
+
                 TextColumn::make('uraian_aktivitas')
                     ->label('Aktivitas')
                     ->limit(30)
@@ -33,6 +50,12 @@ class PresensisTable
                     ->label('Kendala')
                     ->limit(30)
                     ->default('-'),
+
+                TextColumn::make('keterangan')
+                    ->label('Keterangan')
+                    ->limit(30)
+                    ->default('-')
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('created_at')
                     ->label('Dibuat')

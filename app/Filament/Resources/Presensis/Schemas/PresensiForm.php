@@ -4,7 +4,9 @@ namespace App\Filament\Resources\Presensis\Schemas;
 
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
 
@@ -54,25 +56,54 @@ class PresensiForm
                     ])
                     ->columnSpanFull(),
 
+                // === Field Kehadiran (3 kondisi) ===
+                Select::make('kehadiran')
+                    ->label('Kehadiran')
+                    ->options([
+                        'hadir' => 'Hadir',
+                        'tidak_hadir_dengan_keterangan' => 'Tidak Hadir Dengan Keterangan',
+                        'tidak_hadir_tanpa_keterangan' => 'Tidak Hadir Tanpa Keterangan',
+                    ])
+                    ->default('hadir')
+                    ->required()
+                    ->live()
+                    ->columnSpanFull(),
+
+                // === Form untuk HADIR: 3 field ===
                 Textarea::make('uraian_aktivitas')
                     ->label('Uraian Aktivitas')
                     ->placeholder('Tuliskan rincian kegiatan magang hari ini...')
                     ->rows(4)
-                    ->required()
+                    ->required(fn (Get $get): bool => $get('kehadiran') === 'hadir')
+                    ->visible(fn (Get $get): bool => $get('kehadiran') === 'hadir')
                     ->columnSpanFull(),
 
                 Textarea::make('pembelajaran')
                     ->label('Pembelajaran yang Diperoleh')
                     ->placeholder('Apa ilmu atau insight baru yang didapatkan?')
                     ->rows(4)
-                    ->required()
+                    ->required(fn (Get $get): bool => $get('kehadiran') === 'hadir')
+                    ->visible(fn (Get $get): bool => $get('kehadiran') === 'hadir')
                     ->columnSpanFull(),
 
                 Textarea::make('kendala')
                     ->label('Kendala yang Dialami')
                     ->placeholder('Kendala teknis / non-teknis (kosongkan jika tidak ada)...')
                     ->rows(3)
+                    ->visible(fn (Get $get): bool => $get('kehadiran') === 'hadir')
                     ->columnSpanFull(),
+
+                // === Form untuk TIDAK HADIR DENGAN KETERANGAN: 1 field ===
+                Textarea::make('keterangan')
+                    ->label('Alasan / Keterangan Tidak Hadir')
+                    ->placeholder('Tuliskan alasan tidak hadir (contoh: sakit, izin keluarga, dll)...')
+                    ->rows(4)
+                    ->required(fn (Get $get): bool => $get('kehadiran') === 'tidak_hadir_dengan_keterangan')
+                    ->visible(fn (Get $get): bool => $get('kehadiran') === 'tidak_hadir_dengan_keterangan')
+                    ->columnSpanFull(),
+
+                // === TIDAK HADIR TANPA KETERANGAN: tidak ada form tambahan ===
             ]);
     }
 }
+
