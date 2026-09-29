@@ -11,11 +11,25 @@ class KehadiranChart extends ChartWidget
 {
     protected static ?int $sort = 2;
 
-    protected ?string $heading = 'Progress Kehadiran Magang';
-
-    protected ?string $description = 'Proporsi kehadiran terhadap total hari kerja';
-
     protected ?string $maxHeight = '300px';
+
+    public function getHeading(): ?string
+    {
+        return match (app()->getLocale()) {
+            'en' => 'Attendance Progress',
+            'ar' => 'نسبة الحضور في التدريب',
+            default => 'Progress Kehadiran Magang',
+        };
+    }
+
+    public function getDescription(): ?string
+    {
+        return match (app()->getLocale()) {
+            'en' => 'Proportion of attendance against total required workdays',
+            'ar' => 'نسبة الحضور مقارنة بإجمالي أيام العمل المطلوبة',
+            default => 'Proporsi kehadiran terhadap total hari kerja',
+        };
+    }
 
     /**
      * Filter aktif saat ini: 'all' atau key periode ('1', '2', dst.)
@@ -32,10 +46,27 @@ class KehadiranChart extends ChartWidget
      */
     protected function getFilters(): ?array
     {
-        $filters = ['all' => 'Semua Periode (Keseluruhan)'];
+        $locale = app()->getLocale();
+        $filters = [
+            'all' => match ($locale) {
+                'en' => 'All Periods (Overall)',
+                'ar' => 'جميع الفترات (الإجمالي)',
+                default => 'Semua Periode (Keseluruhan)',
+            },
+        ];
 
         foreach (config('magang.periods', []) as $key => $p) {
-            $filters[$key] = "{$p['name']} ({$p['label']})";
+            $name = match ($locale) {
+                'en' => "Period {$key}",
+                'ar' => "الفترة {$key}",
+                default => $p['name'],
+            };
+            $label = match ($locale) {
+                'en' => Carbon::parse($p['start'])->locale('en')->translatedFormat('d M Y') . ' - ' . Carbon::parse($p['end'])->locale('en')->translatedFormat('d M Y'),
+                'ar' => Carbon::parse($p['start'])->locale('ar')->translatedFormat('d M Y') . ' - ' . Carbon::parse($p['end'])->locale('ar')->translatedFormat('d M Y'),
+                default => $p['label'],
+            };
+            $filters[$key] = "{$name} ({$label})";
         }
 
         return $filters;
@@ -102,38 +133,64 @@ class KehadiranChart extends ChartWidget
         $totalTercatat = $hadir + $izin + $tanpaKeterangan;
         $sisaHariKerja = max(0, $totalWorkdays - $totalTercatat);
 
+        $locale = app()->getLocale();
+
         // Bangun label dan data (hanya tampilkan segmen yang nilainya > 0)
         $labels = [];
         $data = [];
         $colors = [];
 
         if ($hadir > 0) {
-            $labels[] = "Hadir ({$hadir})";
+            $lblHadir = match ($locale) {
+                'en' => 'Present',
+                'ar' => 'حاضر',
+                default => 'Hadir',
+            };
+            $labels[] = "{$lblHadir} ({$hadir})";
             $data[] = $hadir;
             $colors[] = '#10B981'; // Emerald-500
         }
 
         if ($izin > 0) {
-            $labels[] = "Izin/Sakit ({$izin})";
+            $lblIzin = match ($locale) {
+                'en' => 'Excused / Sick',
+                'ar' => 'إذن / مرضي',
+                default => 'Izin/Sakit',
+            };
+            $labels[] = "{$lblIzin} ({$izin})";
             $data[] = $izin;
             $colors[] = '#F59E0B'; // Amber-500
         }
 
         if ($tanpaKeterangan > 0) {
-            $labels[] = "Tanpa Keterangan ({$tanpaKeterangan})";
+            $lblTanpa = match ($locale) {
+                'en' => 'Unexcused',
+                'ar' => 'بدون عذر',
+                default => 'Tanpa Keterangan',
+            };
+            $labels[] = "{$lblTanpa} ({$tanpaKeterangan})";
             $data[] = $tanpaKeterangan;
             $colors[] = '#EF4444'; // Red-500
         }
 
         if ($sisaHariKerja > 0) {
-            $labels[] = "Sisa Hari Kerja ({$sisaHariKerja})";
+            $lblSisa = match ($locale) {
+                'en' => 'Remaining Workdays',
+                'ar' => 'أيام العمل المتبقية',
+                default => 'Sisa Hari Kerja',
+            };
+            $labels[] = "{$lblSisa} ({$sisaHariKerja})";
             $data[] = $sisaHariKerja;
             $colors[] = '#94A3B8'; // Slate-400
         }
 
         // Edge case: belum ada data sama sekali
         if (empty($data)) {
-            $labels[] = "Belum Ada Data";
+            $labels[] = match ($locale) {
+                'en' => 'No Data Available',
+                'ar' => 'لا توجد بيانات متاحة',
+                default => 'Belum Ada Data',
+            };
             $data[] = 1;
             $colors[] = '#CBD5E1'; // Slate-300
         }

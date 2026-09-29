@@ -20,11 +20,32 @@ class PresensiResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentCheck;
 
-    protected static ?string $navigationLabel = 'Presensi Monev';
+    public static function getNavigationLabel(): string
+    {
+        return match (app()->getLocale()) {
+            'en' => 'Monev Attendance',
+            'ar' => 'حضور المتابعة',
+            default => 'Presensi Monev',
+        };
+    }
 
-    protected static ?string $modelLabel = 'Laporan Presensi';
+    public static function getModelLabel(): string
+    {
+        return match (app()->getLocale()) {
+            'en' => 'Attendance Report',
+            'ar' => 'تقرير الحضور',
+            default => 'Laporan Presensi',
+        };
+    }
 
-    protected static ?string $pluralModelLabel = 'Laporan Presensi';
+    public static function getPluralModelLabel(): string
+    {
+        return match (app()->getLocale()) {
+            'en' => 'Attendance Reports',
+            'ar' => 'تقارير الحضور',
+            default => 'Laporan Presensi',
+        };
+    }
 
     protected static ?string $recordTitleAttribute = 'tanggal';
 

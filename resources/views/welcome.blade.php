@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="id" class="dark">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monev MagangHub - Balai Diklat Industri Yogyakarta</title>
+    <title>{{ match(app()->getLocale()) { 'en' => 'Monev MagangHub - Industrial Training Center Yogyakarta', 'ar' => 'متابعة تدريب MagangHub - معهد التدريب الصناعي بيوغياكارتا', default => 'Monev MagangHub - Balai Diklat Industri Yogyakarta' } }}</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -18,7 +18,7 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        sans: ['"Plus Jakarta Sans"', '"Tajawal"', 'sans-serif'],
                     },
                     colors: {
                         brand: {
@@ -46,18 +46,51 @@
     <header class="w-full bg-white/80 dark:bg-[#111827]/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 sticky top-0 z-50">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
             <!-- Brand / Logo Info -->
-            <div class="flex items-center space-x-3">
-                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-700 to-indigo-500 flex items-center justify-center text-white font-extrabold text-sm shadow-md shadow-blue-500/20">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-700 to-indigo-500 flex items-center justify-center text-white font-extrabold text-sm shadow-md shadow-blue-500/20 flex-shrink-0">
                     BDI
                 </div>
                 <div>
                     <span class="font-bold text-sm tracking-tight text-slate-900 dark:text-white block leading-tight">Monev MagangHub</span>
-                    <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 block leading-tight">Balai Diklat Industri Yogyakarta</span>
+                    <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 block leading-tight">
+                        {{ match(app()->getLocale()) { 'en' => 'Industrial Training Center Yogyakarta', 'ar' => 'معهد التدريب الصناعي بيوغياكارتا', default => 'Balai Diklat Industri Yogyakarta' } }}
+                    </span>
                 </div>
             </div>
 
-            <!-- Right Actions: Dark Mode & Login Button -->
-            <div class="flex items-center space-x-3">
+            <!-- Right Actions: Locale Switcher, Dark Mode & Login Button -->
+            <div class="flex items-center gap-2.5">
+                <!-- Locale Switcher Dropdown -->
+                <div class="relative" id="locale-dropdown-container">
+                    <button id="locale-dropdown-btn" type="button" aria-label="Switch Language" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold transition">
+                        <span>{{ match(app()->getLocale()) { 'en' => '🇬🇧 EN', 'ar' => '🇸🇦 AR', default => '🇮🇩 ID' } }}</span>
+                        <svg class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200" id="locale-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div id="locale-dropdown-menu" class="hidden absolute right-0 rtl:right-auto rtl:left-0 mt-2 w-44 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-[#111827] shadow-xl py-1.5 z-50 overflow-hidden backdrop-blur-md">
+                        <form method="POST" action="{{ route('filament-locale-switcher.switch', ['locale' => 'id']) }}">
+                            @csrf
+                            <button type="submit" class="w-full flex items-center justify-between px-3.5 py-2 text-xs font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition {{ app()->getLocale() === 'id' ? 'text-blue-600 dark:text-blue-400 font-bold bg-blue-50/50 dark:bg-blue-950/20' : 'text-slate-700 dark:text-slate-300' }}">
+                                <span class="flex items-center gap-2.5 text-sm"><span>🇮🇩</span> <span class="text-xs">Bahasa Indonesia</span></span>
+                                @if(app()->getLocale() === 'id')<span class="text-blue-600 dark:text-blue-400 font-bold">✓</span>@endif
+                            </button>
+                        </form>
+                        <form method="POST" action="{{ route('filament-locale-switcher.switch', ['locale' => 'en']) }}">
+                            @csrf
+                            <button type="submit" class="w-full flex items-center justify-between px-3.5 py-2 text-xs font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition {{ app()->getLocale() === 'en' ? 'text-blue-600 dark:text-blue-400 font-bold bg-blue-50/50 dark:bg-blue-950/20' : 'text-slate-700 dark:text-slate-300' }}">
+                                <span class="flex items-center gap-2.5 text-sm"><span>🇬🇧</span> <span class="text-xs">English</span></span>
+                                @if(app()->getLocale() === 'en')<span class="text-blue-600 dark:text-blue-400 font-bold">✓</span>@endif
+                            </button>
+                        </form>
+                        <form method="POST" action="{{ route('filament-locale-switcher.switch', ['locale' => 'ar']) }}">
+                            @csrf
+                            <button type="submit" class="w-full flex items-center justify-between px-3.5 py-2 text-xs font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition {{ app()->getLocale() === 'ar' ? 'text-blue-600 dark:text-blue-400 font-bold bg-blue-50/50 dark:bg-blue-950/20' : 'text-slate-700 dark:text-slate-300' }}">
+                                <span class="flex items-center gap-2.5 text-sm"><span>🇸🇦</span> <span class="text-xs">العربية</span></span>
+                                @if(app()->getLocale() === 'ar')<span class="text-blue-600 dark:text-blue-400 font-bold">✓</span>@endif
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
                 <!-- Theme Toggle Button -->
                 <button id="theme-toggle" type="button" aria-label="Toggle Theme" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
                     <!-- Sun Icon (Dark Mode Active) -->
@@ -73,12 +106,11 @@
                 <!-- Login Admin Action -->
                 @auth
                     <a href="/admin" class="inline-flex items-center gap-2 px-4 py-2 text-xs md:text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition shadow-sm shadow-blue-500/20 active:scale-[0.98]">
-                        <span>Dashboard</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                        <span>{{ match(app()->getLocale()) { 'en' => 'Dashboard', 'ar' => 'لوحة التحكم', default => 'Dashboard' } }}</span>
                     </a>
                 @else
                     <a href="/admin/login" class="inline-flex items-center gap-2 px-4 py-2 text-xs md:text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition shadow-sm shadow-blue-500/20 active:scale-[0.98]">
-                        <span>Login Admin</span>
+                        <span>{{ match(app()->getLocale()) { 'en' => 'Admin Login', 'ar' => 'تسجيل دخول المشرف', default => 'Login Admin' } }}</span>
                     </a>
                 @endauth
             </div>
@@ -101,16 +133,24 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-sm sm:text-base text-emerald-900 dark:text-emerald-300">
-                                Anda sudah mengisi presensi hari ini!
+                                {{ match(app()->getLocale()) { 
+                                    'en' => 'You have submitted attendance today!', 
+                                    'ar' => 'لقد قمت بتسجيل الحضور اليوم!', 
+                                    default => 'Anda sudah mengisi presensi hari ini!' 
+                                } }}
                             </h3>
                             <p class="text-xs text-emerald-700 dark:text-emerald-400/90 mt-0.5">
-                                Logbook aktivitas tanggal {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }} sudah tersimpan rapi di database lokal.
+                                {{ match(app()->getLocale()) {
+                                    'en' => 'Activity logbook for ' . \Carbon\Carbon::now()->locale('en')->translatedFormat('d F Y') . ' is safely stored in local database.',
+                                    'ar' => 'سجل النشاط لتاريخ ' . \Carbon\Carbon::now()->locale('ar')->translatedFormat('d F Y') . ' محفوظ بنجاح في قاعدة البيانات المحلية.',
+                                    default => 'Logbook aktivitas tanggal ' . \Carbon\Carbon::now()->locale('id')->translatedFormat('d F Y') . ' sudah tersimpan rapi di database lokal.'
+                                } }}
                             </p>
                         </div>
                     </div>
                     <a href="/admin/presensis" class="inline-flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition shadow-sm shadow-emerald-600/20 whitespace-nowrap self-stretch sm:self-auto text-center">
-                        <span>Lihat Riwayat</span>
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        <span>{{ match(app()->getLocale()) { 'en' => 'View History', 'ar' => 'عرض السجل', default => 'Lihat Riwayat' } }}</span>
+                        <svg class="w-3.5 h-3.5 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </a>
                 </div>
             @else
@@ -124,15 +164,23 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-sm sm:text-base text-amber-900 dark:text-amber-300">
-                                Sudahkah Anda presensi hari ini?
+                                {{ match(app()->getLocale()) { 
+                                    'en' => 'Have you submitted your attendance today?', 
+                                    'ar' => 'هل قمت بتسجيل الحضور اليوم؟', 
+                                    default => 'Sudahkah Anda presensi hari ini?' 
+                                } }}
                             </h3>
                             <p class="text-xs text-amber-800 dark:text-amber-400 mt-0.5">
-                                Belum ada logbook tercatat untuk hari ini ({{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}). Jangan lupa input backup sebelum pukul 23:59 WIB.
+                                {{ match(app()->getLocale()) {
+                                    'en' => 'No logbook entry recorded for today (' . \Carbon\Carbon::now()->locale('en')->translatedFormat('d F Y') . '). Remember to submit your backup before 23:59 WIB.',
+                                    'ar' => 'لا يوجد سجل أنشطة لليوم (' . \Carbon\Carbon::now()->locale('ar')->translatedFormat('d F Y') . '). تذكر إدخال الحضور قبل الساعة 23:59 بتوقيت غرب إندونيسيا.',
+                                    default => 'Belum ada logbook tercatat untuk hari ini (' . \Carbon\Carbon::now()->locale('id')->translatedFormat('d F Y') . '). Jangan lupa input backup sebelum pukul 23:59 WIB.'
+                                } }}
                             </p>
                         </div>
                     </div>
                     <a href="/admin/presensis/create" class="inline-flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 rounded-xl transition shadow-sm shadow-amber-600/20 whitespace-nowrap self-stretch sm:self-auto text-center">
-                        <span>Isi Presensi Sekarang</span>
+                        <span>{{ match(app()->getLocale()) { 'en' => 'Submit Attendance Now', 'ar' => 'تسجيل الحضور الآن', default => 'Isi Presensi Sekarang' } }}</span>
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                     </a>
                 </div>
@@ -153,16 +201,16 @@
                             class="w-full h-full object-cover rounded-xl"
                         >
                     </div>
-                    <span class="absolute -bottom-2 -right-2 px-2.5 py-1 bg-emerald-500 text-[10px] font-bold text-white uppercase tracking-wider rounded-full shadow border-2 border-white dark:border-[#111827]">
-                        Active
+                    <span class="absolute -bottom-2 -right-2 rtl:-right-auto rtl:-left-2 px-2.5 py-1 bg-emerald-500 text-[10px] font-bold text-white uppercase tracking-wider rounded-full shadow border-2 border-white dark:border-[#111827]">
+                        {{ match(app()->getLocale()) { 'en' => 'Active', 'ar' => 'نشط', default => 'Active' } }}
                     </span>
                 </div>
 
                 <!-- Bio & Posisi Magang -->
-                <div class="flex-1 text-center sm:text-left space-y-3">
+                <div class="flex-1 text-center sm:text-left rtl:sm:text-right space-y-3">
                     <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-200/50 dark:border-blue-800/50">
                         <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-                        Internal Archive System
+                        {{ match(app()->getLocale()) { 'en' => 'Internal Archive System', 'ar' => 'نظام الأرشيف الداخلي', default => 'Internal Archive System' } }}
                     </div>
                     
                     <div>
@@ -170,18 +218,22 @@
                             Muhammad Narendra Hawari
                         </h1>
                         <p class="text-sm font-semibold text-blue-600 dark:text-blue-400 mt-0.5">
-                            Data Analyst Intern
+                            {{ match(app()->getLocale()) { 'en' => 'Data Analyst Intern', 'ar' => 'متدرب محلل بيانات', default => 'Data Analyst Intern' } }}
                         </p>
                     </div>
 
                     <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed max-w-xl">
-                        Sistem database lokal pencatatan presensi, uraian aktivitas harian, pembelajaran yang diperoleh, dan mitigasi kendala program <strong class="text-slate-800 dark:text-slate-200">Monev MagangHub</strong> di <strong class="text-slate-800 dark:text-slate-200">Balai Diklat Industri Yogyakarta</strong>.
+                        {{ match(app()->getLocale()) {
+                            'en' => 'Local database archive for recording daily attendance, activity logs, learning outcomes, and issue mitigations for the Monev MagangHub program at Balai Diklat Industri Yogyakarta.',
+                            'ar' => 'نظام قاعدة بيانات محلية لتسجيل الحضور اليومي، وتفاصيل الأنشطة، والدروس المستفادة، وتخفيف المعوقات لبرنامج متابعة التدريب الداخلي في معهد التدريب الصناعي بيوغياكارتا.',
+                            default => 'Sistem database lokal pencatatan presensi, uraian aktivitas harian, pembelajaran yang diperoleh, dan mitigasi kendala program Monev MagangHub di Balai Diklat Industri Yogyakarta.'
+                        } }}
                     </p>
 
                     <!-- Info Badges -->
-                    <div class="pt-2 flex flex-wrap items-center justify-center sm:justify-start gap-2 text-xs">
+                    <div class="pt-2 flex flex-wrap items-center justify-center sm:justify-start rtl:sm:justify-start gap-2 text-xs">
                         <span class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-lg font-medium border border-slate-200/60 dark:border-slate-700/60">
-                            🏢 BDI Yogyakarta
+                            🏢 {{ match(app()->getLocale()) { 'en' => 'BDI Yogyakarta', 'ar' => 'معهد BDI بيوغياكارتا', default => 'BDI Yogyakarta' } }}
                         </span>
                         <span class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-lg font-medium border border-slate-200/60 dark:border-slate-700/60">
                             🐘 PostgreSQL
@@ -196,27 +248,27 @@
             <!-- Mini Summary Bar -->
             <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800/80 grid grid-cols-2 sm:grid-cols-3 gap-4">
                 <div class="p-3.5 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-100 dark:border-slate-800">
-                    <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 block">Total Logbook Tersimpan</span>
+                    <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 block">{{ match(app()->getLocale()) { 'en' => 'Total Saved Logbooks', 'ar' => 'إجمالي السجلات المحفوظة', default => 'Total Logbook Tersimpan' } }}</span>
                     <span class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mt-1 block">
-                        {{ $totalLaporan ?? 0 }} <span class="text-xs font-normal text-slate-500">Hari</span>
+                        {{ $totalLaporan ?? 0 }} <span class="text-xs font-normal text-slate-500">{{ match(app()->getLocale()) { 'en' => 'Days', 'ar' => 'أيام', default => 'Hari' } }}</span>
                     </span>
                 </div>
 
                 <div class="p-3.5 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-100 dark:border-slate-800">
-                    <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 block">Entri Terakhir</span>
+                    <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 block">{{ match(app()->getLocale()) { 'en' => 'Latest Entry', 'ar' => 'آخر تسجيل', default => 'Entri Terakhir' } }}</span>
                     <span class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mt-1 block">
                         @if(isset($laporanTerbaru) && $laporanTerbaru)
-                            {{ \Carbon\Carbon::parse($laporanTerbaru->tanggal)->translatedFormat('d M Y') }}
+                            {{ \Carbon\Carbon::parse($laporanTerbaru->tanggal)->locale(app()->getLocale())->translatedFormat('d M Y') }}
                         @else
-                            <span class="text-sm font-normal text-slate-400">Belum ada</span>
+                            <span class="text-sm font-normal text-slate-400">{{ match(app()->getLocale()) { 'en' => 'None yet', 'ar' => 'لا يوجد بعد', default => 'Belum ada' } }}</span>
                         @endif
                     </span>
                 </div>
 
                 <div class="p-3.5 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-100 dark:border-slate-800 col-span-2 sm:col-span-1">
-                    <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 block">Database Status</span>
+                    <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 block">{{ match(app()->getLocale()) { 'en' => 'Database Status', 'ar' => 'حالة قاعدة البيانات', default => 'Status Database' } }}</span>
                     <span class="inline-flex items-center gap-1.5 text-sm sm:text-base font-bold text-emerald-600 dark:text-emerald-400 mt-1">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Connected Local
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span> {{ match(app()->getLocale()) { 'en' => 'Connected Local', 'ar' => 'متصل محلياً', default => 'Connected Local' } }}
                     </span>
                 </div>
             </div>
@@ -231,10 +283,10 @@
                     id="prev-period-btn" 
                     type="button" 
                     class="p-2 sm:px-3 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-1.5 text-xs font-semibold active:scale-95"
-                    title="Periode Sebelumnya"
+                    title="{{ match(app()->getLocale()) { 'en' => 'Previous Period', 'ar' => 'الفترة السابقة', default => 'Periode Sebelumnya' } }}"
                 >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
-                    <span class="hidden sm:inline">Periode Lalu</span>
+                    <svg class="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+                    <span class="hidden sm:inline">{{ match(app()->getLocale()) { 'en' => 'Prev Period', 'ar' => 'الفترة السابقة', default => 'Periode Lalu' } }}</span>
                 </button>
 
                 <div class="text-center">
@@ -250,10 +302,10 @@
                     id="next-period-btn" 
                     type="button" 
                     class="p-2 sm:px-3 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-1.5 text-xs font-semibold active:scale-95"
-                    title="Periode Selanjutnya"
+                    title="{{ match(app()->getLocale()) { 'en' => 'Next Period', 'ar' => 'الفترة التالية', default => 'Periode Selanjutnya' } }}"
                 >
-                    <span class="hidden sm:inline">Periode Berikutnya</span>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+                    <span class="hidden sm:inline">{{ match(app()->getLocale()) { 'en' => 'Next Period', 'ar' => 'الفترة التالية', default => 'Periode Berikutnya' } }}</span>
+                    <svg class="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
                 </button>
             </div>
 
@@ -261,13 +313,18 @@
             <div class="border border-slate-200/80 dark:border-slate-800 rounded-2xl p-3 sm:p-5 bg-slate-50/60 dark:bg-slate-900/50">
                 <!-- Header Hari: Sen, Sel, Rab, Kam, Jum, Sab, Min -->
                 <div class="grid grid-cols-7 gap-1 sm:gap-2 text-center pb-3 mb-3 border-b border-slate-200/80 dark:border-slate-800">
-                    <div class="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200">Sen</div>
-                    <div class="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200">Sel</div>
-                    <div class="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200">Rab</div>
-                    <div class="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200">Kam</div>
-                    <div class="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200">Jum</div>
-                    <div class="text-xs sm:text-sm font-bold text-slate-400 dark:text-slate-500">Sab</div>
-                    <div class="text-xs sm:text-sm font-bold text-slate-400 dark:text-slate-500">Min</div>
+                    @php
+                        $dayHeaders = match(app()->getLocale()) {
+                            'en' => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                            'ar' => ['الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت', 'الأحد'],
+                            default => ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
+                        };
+                    @endphp
+                    @foreach($dayHeaders as $index => $dayName)
+                        <div class="text-xs sm:text-sm font-bold {{ $index >= 5 ? 'text-slate-400 dark:text-slate-500' : 'text-slate-700 dark:text-slate-200' }}">
+                            {{ $dayName }}
+                        </div>
+                    @endforeach
                 </div>
 
                 <!-- Grid Tanggal Dinamis -->
@@ -279,47 +336,51 @@
             <!-- Keterangan & Ringkasan -->
             <div class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
                 <!-- Legenda Status -->
-                <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 sm:gap-5 text-slate-600 dark:text-slate-400">
+                <div class="flex flex-wrap items-center justify-center sm:justify-start rtl:sm:justify-start gap-3 sm:gap-5 text-slate-600 dark:text-slate-400">
                     <div class="flex items-center gap-1.5">
                         <span class="w-4 h-4 rounded bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-[10px]">✓</span>
-                        <span>Terisi</span>
+                        <span>{{ match(app()->getLocale()) { 'en' => 'Present', 'ar' => 'حاضر', default => 'Terisi' } }}</span>
                     </div>
                     <div class="flex items-center gap-1.5">
                         <span class="w-2 h-2 bg-slate-400 dark:bg-slate-600 rounded-[1px]"></span>
-                        <span>Libur / Weekend</span>
+                        <span>{{ match(app()->getLocale()) { 'en' => 'Holiday / Weekend', 'ar' => 'عطلة / نهاية الأسبوع', default => 'Libur / Weekend' } }}</span>
                     </div>
                     <div class="flex items-center gap-1.5">
                         <span class="w-2 h-2 bg-blue-500 rotate-45 rounded-[1px]"></span>
-                        <span>Hari Ini</span>
+                        <span>{{ match(app()->getLocale()) { 'en' => 'Today', 'ar' => 'اليوم', default => 'Hari Ini' } }}</span>
                     </div>
                     <div class="flex items-center gap-1.5">
                         <span class="w-2 h-2 border border-slate-300 dark:border-slate-700 rounded-full"></span>
-                        <span>Masa Depan</span>
+                        <span>{{ match(app()->getLocale()) { 'en' => 'Future', 'ar' => 'قادم', default => 'Masa Depan' } }}</span>
                     </div>
                 </div>
 
                 <!-- Statistik Periode Aktif -->
                 <div id="period-stats" class="text-xs font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/60 px-3 py-1.5 rounded-xl border border-slate-200/50 dark:border-slate-700/50 whitespace-nowrap">
-                    Memuat data...
+                    {{ match(app()->getLocale()) { 'en' => 'Loading data...', 'ar' => 'جاري تحميل البيانات...', default => 'Memuat data...' } }}
                 </div>
             </div>
         </div>
 
         <!-- Shortcut & Rules Card -->
         <div class="mt-6 bg-slate-100/70 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 text-xs text-slate-500 dark:text-slate-400 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div class="flex items-center gap-2 text-center sm:text-left">
+            <div class="flex items-center gap-2 text-center sm:text-left rtl:sm:text-right">
                 <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <span>Validasi aktif: Tanggal unik (anti-duplikat) & Sabtu/Minggu libur presensi.</span>
+                <span>{{ match(app()->getLocale()) {
+                    'en' => 'Active validation: Unique date (anti-duplicate) & Saturday/Sunday attendance off.',
+                    'ar' => 'التحقق نشط: تاريخ فريد (منع التكرار) وعطلة نهاية الأسبوع يومي السبت والأحد.',
+                    default => 'Validasi aktif: Tanggal unik (anti-duplikat) & Sabtu/Minggu libur presensi.'
+                } }}</span>
             </div>
             <a href="/admin/presensis" class="text-blue-600 dark:text-blue-400 hover:underline font-medium whitespace-nowrap">
-                Buka Tabel Lengkap &rarr;
+                {{ match(app()->getLocale()) { 'en' => 'Open Full Table →', 'ar' => 'عرض الجدول الكامل ←', default => 'Buka Tabel Lengkap →' } }}
             </a>
         </div>
     </main>
 
     <!-- Footer -->
     <footer class="w-full border-t border-slate-200 dark:border-slate-800 py-6 text-center text-xs text-slate-500 dark:text-slate-400">
-        &copy; {{ date('Y') }} Muhammad Narendra Hawari &bull; Monev MagangHub BDI Yogyakarta Tracker
+        &copy; {{ date('Y') }} Muhammad Narendra Hawari &bull; {{ match(app()->getLocale()) { 'en' => 'Monev MagangHub BDI Yogyakarta Tracker', 'ar' => 'نظام متابعة التدريب MagangHub معهد BDI بيوغياكارتا', default => 'Monev MagangHub BDI Yogyakarta Tracker' } }}
     </footer>
 
     <!-- Script Theme Toggle & Kalender Periode -->
@@ -361,15 +422,45 @@
         // --- 2. Kalender Periode MagangHub ---
         const tanggalTerisiList = @json($tanggalTerisi ?? []);
         const hariLiburList = @json($hariLibur ?? []);
+        const currentLocale = '{{ app()->getLocale() }}';
 
-        // 6 Periode Magang
+        // 6 Periode Magang dengan dukungan multi-bahasa (ID, EN, AR)
+        const periodTranslations = {
+            id: [
+                { name: 'Periode 1', label: '10 Agu 2026 - 9 Sep 2026' },
+                { name: 'Periode 2', label: '10 Sep 2026 - 9 Okt 2026' },
+                { name: 'Periode 3', label: '10 Okt 2026 - 9 Nov 2026' },
+                { name: 'Periode 4', label: '10 Nov 2026 - 9 Des 2026' },
+                { name: 'Periode 5', label: '10 Des 2026 - 9 Jan 2027' },
+                { name: 'Periode 6', label: '10 Jan 2027 - 9 Feb 2027' },
+            ],
+            en: [
+                { name: 'Period 1', label: '10 Aug 2026 - 09 Sep 2026' },
+                { name: 'Period 2', label: '10 Sep 2026 - 09 Oct 2026' },
+                { name: 'Period 3', label: '10 Oct 2026 - 09 Nov 2026' },
+                { name: 'Period 4', label: '10 Nov 2026 - 09 Dec 2026' },
+                { name: 'Period 5', label: '10 Dec 2026 - 09 Jan 2027' },
+                { name: 'Period 6', label: '10 Jan 2027 - 09 Feb 2027' },
+            ],
+            ar: [
+                { name: 'الفترة 1', label: '10 أغسطس 2026 - 09 سبتمبر 2026' },
+                { name: 'الفترة 2', label: '10 سبتمبر 2026 - 09 أكتوبر 2026' },
+                { name: 'الفترة 3', label: '10 أكتوبر 2026 - 09 نوفمبر 2026' },
+                { name: 'الفترة 4', label: '10 نوفمبر 2026 - 09 ديسمبر 2026' },
+                { name: 'الفترة 5', label: '10 ديسمبر 2026 - 09 يناير 2027' },
+                { name: 'الفترة 6', label: '10 يناير 2027 - 09 فبراير 2027' },
+            ],
+        };
+
+        const activePeriodLang = periodTranslations[currentLocale] || periodTranslations['id'];
+
         const periods = [
-            { id: 1, name: 'Periode 1', start: '2026-08-10', end: '2026-09-09', label: '10 Agu 2026 - 9 Sep 2026' },
-            { id: 2, name: 'Periode 2', start: '2026-09-10', end: '2026-10-09', label: '10 Sep 2026 - 9 Okt 2026' },
-            { id: 3, name: 'Periode 3', start: '2026-10-10', end: '2026-11-09', label: '10 Okt 2026 - 9 Nov 2026' },
-            { id: 4, name: 'Periode 4', start: '2026-11-10', end: '2026-12-09', label: '10 Nov 2026 - 9 Des 2026' },
-            { id: 5, name: 'Periode 5', start: '2026-12-10', end: '2027-01-09', label: '10 Des 2026 - 9 Jan 2027' },
-            { id: 6, name: 'Periode 6', start: '2027-01-10', end: '2027-02-09', label: '10 Jan 2027 - 9 Feb 2027' },
+            { id: 1, name: activePeriodLang[0].name, start: '2026-08-10', end: '2026-09-09', label: activePeriodLang[0].label },
+            { id: 2, name: activePeriodLang[1].name, start: '2026-09-10', end: '2026-10-09', label: activePeriodLang[1].label },
+            { id: 3, name: activePeriodLang[2].name, start: '2026-10-10', end: '2026-11-09', label: activePeriodLang[2].label },
+            { id: 4, name: activePeriodLang[3].name, start: '2026-11-10', end: '2026-12-09', label: activePeriodLang[3].label },
+            { id: 5, name: activePeriodLang[4].name, start: '2026-12-10', end: '2027-01-09', label: activePeriodLang[4].label },
+            { id: 6, name: activePeriodLang[5].name, start: '2027-01-10', end: '2027-02-09', label: activePeriodLang[5].label },
         ];
 
         // Format tanggal hari ini (YYYY-MM-DD)
@@ -388,6 +479,18 @@
         const nextBtn = document.getElementById('next-period-btn');
         const calendarGridEl = document.getElementById('calendar-grid');
         const periodStatsEl = document.getElementById('period-stats');
+
+        const i18n = {
+            holiday: currentLocale === 'en' ? 'Holiday' : (currentLocale === 'ar' ? 'عطلة' : 'Libur'),
+            weekend: currentLocale === 'en' ? 'Weekend Off' : (currentLocale === 'ar' ? 'عطلة نهاية الأسبوع' : 'Libur Weekend'),
+            today: currentLocale === 'en' ? 'Today' : (currentLocale === 'ar' ? 'اليوم' : 'Hari Ini'),
+            noAttendance: currentLocale === 'en' ? 'No Attendance' : (currentLocale === 'ar' ? 'غياب' : 'Tidak Ada Presensi'),
+            future: currentLocale === 'en' ? 'Future' : (currentLocale === 'ar' ? 'قادم' : 'Masa Depan'),
+            attendanceSubmitted: currentLocale === 'en' ? 'Attendance Submitted' : (currentLocale === 'ar' ? 'تم تسجيل الحضور' : 'Presensi Terisi'),
+            dateLabel: currentLocale === 'en' ? 'Date' : (currentLocale === 'ar' ? 'التاريخ' : 'Tanggal'),
+            attendancePrefix: currentLocale === 'en' ? 'Attendance:' : (currentLocale === 'ar' ? 'الحضور:' : 'Presensi:'),
+            workdaysSuffix: currentLocale === 'en' ? 'Workdays' : (currentLocale === 'ar' ? 'أيام عمل' : 'Hari Kerja'),
+        };
 
         function renderCalendar(index) {
             const period = periods[index];
@@ -473,19 +576,20 @@
                         </div>
                     `;
                 } else if (isHoliday) {
-                    indicatorHtml = `<span class="inline-block w-1.5 h-1.5 bg-rose-500 dark:bg-rose-400 rounded-[1px]" title="Libur: ${holidayName}"></span>`;
+                    indicatorHtml = `<span class="inline-block w-1.5 h-1.5 bg-rose-500 dark:bg-rose-400 rounded-[1px]" title="${i18n.holiday}: ${holidayName}"></span>`;
                 } else if (isWeekend) {
-                    indicatorHtml = `<span class="inline-block w-1.5 h-1.5 bg-slate-400 dark:bg-slate-600 rounded-[1px]" title="Libur Weekend"></span>`;
+                    indicatorHtml = `<span class="inline-block w-1.5 h-1.5 bg-slate-400 dark:bg-slate-600 rounded-[1px]" title="${i18n.weekend}"></span>`;
                 } else if (isToday) {
-                    indicatorHtml = `<span class="inline-block w-2 h-2 bg-blue-500 rotate-45 rounded-[1px] shadow-sm animate-pulse" title="Hari Ini"></span>`;
+                    indicatorHtml = `<span class="inline-block w-2 h-2 bg-blue-500 rotate-45 rounded-[1px] shadow-sm animate-pulse" title="${i18n.today}"></span>`;
                 } else if (isPast) {
-                    indicatorHtml = `<span class="inline-block w-1.5 h-1.5 bg-slate-400 dark:bg-slate-600 rounded-[1px]" title="Tidak Ada Presensi"></span>`;
+                    indicatorHtml = `<span class="inline-block w-1.5 h-1.5 bg-slate-400 dark:bg-slate-600 rounded-[1px]" title="${i18n.noAttendance}"></span>`;
                 } else {
-                    indicatorHtml = `<span class="inline-block w-1.5 h-1.5 border border-slate-300 dark:border-slate-700 rounded-full" title="Masa Depan"></span>`;
+                    indicatorHtml = `<span class="inline-block w-1.5 h-1.5 border border-slate-300 dark:border-slate-700 rounded-full" title="${i18n.future}"></span>`;
                 }
 
                 cell.className = cellClasses;
-                cell.title = `Tanggal: ${dateStr}${isHoliday ? ` (Libur: ${holidayName})` : (isWeekend ? ' (Weekend)' : (isFilled ? ' (Presensi Terisi)' : (isToday ? ' (Hari Ini)' : '')))}`;
+                const statusSuffix = isHoliday ? ` (${i18n.holiday}: ${holidayName})` : (isWeekend ? ` (${i18n.weekend})` : (isFilled ? ` (${i18n.attendanceSubmitted})` : (isToday ? ` (${i18n.today})` : '')));
+                cell.title = `${i18n.dateLabel}: ${dateStr}${statusSuffix}`;
                 cell.innerHTML = `
                     <span class="${numClasses}">${dayNum}</span>
                     <div class="h-4 flex items-center justify-center">
@@ -512,7 +616,7 @@
 
             // Tampilkan Ringkasan Statistik
             const percentage = totalWorkdays > 0 ? Math.round((filledWorkdays / totalWorkdays) * 100) : 0;
-            periodStatsEl.innerHTML = `Presensi: <strong class="text-slate-800 dark:text-slate-100">${filledWorkdays}</strong> / ${totalWorkdays} Hari Kerja (<span class="text-emerald-600 dark:text-emerald-400 font-bold">${percentage}%</span>)`;
+            periodStatsEl.innerHTML = `${i18n.attendancePrefix} <strong class="text-slate-800 dark:text-slate-100">${filledWorkdays}</strong> / ${totalWorkdays} ${i18n.workdaysSuffix} (<span class="text-emerald-600 dark:text-emerald-400 font-bold">${percentage}%</span>)`;
         }
 
         prevBtn.addEventListener('click', () => {
@@ -531,6 +635,30 @@
 
         // Jalankan render awal
         renderCalendar(currentPeriodIndex);
+
+        // Locale Switcher Dropdown Toggle
+        const localeBtn = document.getElementById('locale-dropdown-btn');
+        const localeMenu = document.getElementById('locale-dropdown-menu');
+        const localeChevron = document.getElementById('locale-chevron');
+
+        if (localeBtn && localeMenu) {
+            localeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isHidden = localeMenu.classList.toggle('hidden');
+                if (localeChevron) {
+                    localeChevron.style.transform = isHidden ? 'rotate(0deg)' : 'rotate(180deg)';
+                }
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!localeMenu.contains(e.target) && e.target !== localeBtn) {
+                    localeMenu.classList.add('hidden');
+                    if (localeChevron) {
+                        localeChevron.style.transform = 'rotate(0deg)';
+                    }
+                }
+            });
+        }
     </script>
 </body>
 </html>

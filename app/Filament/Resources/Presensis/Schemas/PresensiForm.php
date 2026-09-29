@@ -21,7 +21,11 @@ class PresensiForm
                     ->required(),
 
                 DatePicker::make('tanggal')
-                    ->label('Tanggal Kegiatan')
+                    ->label(fn () => match (app()->getLocale()) {
+                        'en' => 'Activity Date',
+                        'ar' => 'تاريخ النشاط',
+                        default => 'Tanggal Kegiatan',
+                    })
                     ->default(now())
                     ->required()
                     ->unique(
@@ -38,32 +42,61 @@ class PresensiForm
                             $date = \Carbon\Carbon::parse($value);
                             $dateStr = $date->format('Y-m-d');
                             $holidays = config('holidays', []);
+                            $locale = app()->getLocale();
 
                             // 1. Cek Weekend (Sabtu & Minggu)
                             if ($date->isSaturday() || $date->isSunday()) {
-                                $fail('Hari Sabtu dan Minggu adalah hari libur. Tidak perlu mengisi presensi.');
+                                $fail(match ($locale) {
+                                    'en' => 'Saturdays and Sundays are days off. Attendance is not required.',
+                                    'ar' => 'يومي السبت والأحد عطلة. لا يتطلب تسجيل الحضور.',
+                                    default => 'Hari Sabtu dan Minggu adalah hari libur. Tidak perlu mengisi presensi.',
+                                });
                                 return;
                             }
 
                             // 2. Cek Hari Libur Nasional & Cuti Bersama
                             if (isset($holidays[$dateStr])) {
-                                $fail("Tanggal ini adalah hari libur ({$holidays[$dateStr]}). Tidak perlu mengisi presensi.");
+                                $fail(match ($locale) {
+                                    'en' => "This date is a holiday ({$holidays[$dateStr]}). Attendance is not required.",
+                                    'ar' => "هذا التاريخ عطلة ({$holidays[$dateStr]}). لا يتطلب تسجيل الحضور.",
+                                    default => "Tanggal ini adalah hari libur ({$holidays[$dateStr]}). Tidak perlu mengisi presensi.",
+                                });
                             }
                         },
                     ])
                     ->validationMessages([
-                        'unique' => 'Presensi pada tanggal ini sudah pernah diisi! Tidak bisa memasukkan tanggal yang sama.',
+                        'unique' => fn () => match (app()->getLocale()) {
+                            'en' => 'Attendance for this date has already been submitted!',
+                            'ar' => 'تم تسجيل الحضور لهذا التاريخ مسبقاً!',
+                            default => 'Presensi pada tanggal ini sudah pernah diisi! Tidak bisa memasukkan tanggal yang sama.',
+                        },
                     ])
                     ->columnSpanFull(),
 
                 // === Field Kehadiran (3 kondisi) ===
                 Select::make('kehadiran')
-                    ->label('Kehadiran')
-                    ->options([
-                        'hadir' => 'Hadir',
-                        'tidak_hadir_dengan_keterangan' => 'Tidak Hadir Dengan Keterangan',
-                        'tidak_hadir_tanpa_keterangan' => 'Tidak Hadir Tanpa Keterangan',
-                    ])
+                    ->label(fn () => match (app()->getLocale()) {
+                        'en' => 'Attendance Status',
+                        'ar' => 'حالة الحضور',
+                        default => 'Kehadiran',
+                    })
+                    ->options(fn () => match (app()->getLocale()) {
+                        'en' => [
+                            'hadir' => 'Present',
+                            'tidak_hadir_dengan_keterangan' => 'Excused Absence (Sick / Leave)',
+                            'tidak_hadir_tanpa_keterangan' => 'Unexcused Absence',
+                        ],
+                        'ar' => [
+                            'hadir' => 'حاضر',
+                            'tidak_hadir_dengan_keterangan' => 'غياب بعذر (مرضي / إجازة)',
+                            'tidak_hadir_tanpa_keterangan' => 'غياب بدون عذر',
+                        ],
+                        default => [
+                            'hadir' => 'Hadir',
+                            'tidak_hadir_dengan_keterangan' => 'Tidak Hadir Dengan Keterangan',
+                            'tidak_hadir_tanpa_keterangan' => 'Tidak Hadir Tanpa Keterangan',
+                        ],
+                    })
                     ->default('hadir')
                     ->required()
                     ->live()
@@ -71,32 +104,64 @@ class PresensiForm
 
                 // === Form untuk HADIR: 3 field ===
                 Textarea::make('uraian_aktivitas')
-                    ->label('Uraian Aktivitas')
-                    ->placeholder('Tuliskan rincian kegiatan magang hari ini...')
+                    ->label(fn () => match (app()->getLocale()) {
+                        'en' => 'Activity Description',
+                        'ar' => 'وصف النشاط',
+                        default => 'Uraian Aktivitas',
+                    })
+                    ->placeholder(fn () => match (app()->getLocale()) {
+                        'en' => 'Describe internship activities for today...',
+                        'ar' => 'اكتب تفاصيل مهام التدريب لهذا اليوم...',
+                        default => 'Tuliskan rincian kegiatan magang hari ini...',
+                    })
                     ->rows(4)
                     ->required(fn (Get $get): bool => $get('kehadiran') === 'hadir')
                     ->visible(fn (Get $get): bool => $get('kehadiran') === 'hadir')
                     ->columnSpanFull(),
 
                 Textarea::make('pembelajaran')
-                    ->label('Pembelajaran yang Diperoleh')
-                    ->placeholder('Apa ilmu atau insight baru yang didapatkan?')
+                    ->label(fn () => match (app()->getLocale()) {
+                        'en' => 'Learnings Acquired',
+                        'ar' => 'الدروس المستفادة',
+                        default => 'Pembelajaran yang Diperoleh',
+                    })
+                    ->placeholder(fn () => match (app()->getLocale()) {
+                        'en' => 'What new knowledge or insights did you gain?',
+                        'ar' => 'ما المعرفة أو الخبرة الجديدة التي اكتسبتها؟',
+                        default => 'Apa ilmu atau insight baru yang didapatkan?',
+                    })
                     ->rows(4)
                     ->required(fn (Get $get): bool => $get('kehadiran') === 'hadir')
                     ->visible(fn (Get $get): bool => $get('kehadiran') === 'hadir')
                     ->columnSpanFull(),
 
                 Textarea::make('kendala')
-                    ->label('Kendala yang Dialami')
-                    ->placeholder('Kendala teknis / non-teknis (kosongkan jika tidak ada)...')
+                    ->label(fn () => match (app()->getLocale()) {
+                        'en' => 'Obstacles / Challenges',
+                        'ar' => 'المعوقات والتحديات',
+                        default => 'Kendala yang Dialami',
+                    })
+                    ->placeholder(fn () => match (app()->getLocale()) {
+                        'en' => 'Technical / non-technical obstacles (leave blank if none)...',
+                        'ar' => 'معوقات تقنية أو غير تقنية (اتركه فارغاً إن لم يوجد)...',
+                        default => 'Kendala teknis / non-teknis (kosongkan jika tidak ada)...'
+                    })
                     ->rows(3)
                     ->visible(fn (Get $get): bool => $get('kehadiran') === 'hadir')
                     ->columnSpanFull(),
 
                 // === Form untuk TIDAK HADIR DENGAN KETERANGAN: 1 field ===
                 Textarea::make('keterangan')
-                    ->label('Alasan / Keterangan Tidak Hadir')
-                    ->placeholder('Tuliskan alasan tidak hadir (contoh: sakit, izin keluarga, dll)...')
+                    ->label(fn () => match (app()->getLocale()) {
+                        'en' => 'Reason for Absence',
+                        'ar' => 'سبب الغياب',
+                        default => 'Alasan / Keterangan Tidak Hadir',
+                    })
+                    ->placeholder(fn () => match (app()->getLocale()) {
+                        'en' => 'State reason for absence (e.g. sick, family matter, etc)...',
+                        'ar' => 'اكتب سبب الغياب (مثال: مرضي، ظرف عائلي، إلخ)...',
+                        default => 'Tuliskan alasan tidak hadir (contoh: sakit, izin keluarga, dll)...',
+                    })
                     ->rows(4)
                     ->required(fn (Get $get): bool => $get('kehadiran') === 'tidak_hadir_dengan_keterangan')
                     ->visible(fn (Get $get): bool => $get('kehadiran') === 'tidak_hadir_dengan_keterangan')

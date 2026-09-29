@@ -18,27 +18,65 @@ class LatestPresensiWidget extends TableWidget
 
     public function table(Table $table): Table
     {
+        $locale = app()->getLocale();
+
+        $heading = match ($locale) {
+            'en' => 'Recent Attendance & Activity Logbook',
+            'ar' => 'سجل الحضور والأنشطة الأخير',
+            default => 'Logbook & Aktivitas Presensi Terbaru',
+        };
+
+        $lblDate = match ($locale) {
+            'en' => 'Date',
+            'ar' => 'التاريخ',
+            default => 'Tanggal',
+        };
+
+        $lblStatus = match ($locale) {
+            'en' => 'Status',
+            'ar' => 'الحالة',
+            default => 'Status',
+        };
+
+        $lblActivity = match ($locale) {
+            'en' => 'Activity Description',
+            'ar' => 'وصف النشاط',
+            default => 'Uraian Aktivitas',
+        };
+
         return $table
             ->query(
                 Presensi::query()
                     ->where('user_id', Auth::id())
                     ->latest('tanggal')
             )
-            ->heading('Logbook & Aktivitas Presensi Terbaru')
+            ->heading($heading)
             ->paginated([5, 10])
             ->columns([
                 TextColumn::make('tanggal')
-                    ->label('Tanggal')
+                    ->label($lblDate)
                     ->date('d M Y')
                     ->sortable(),
 
                 TextColumn::make('kehadiran')
-                    ->label('Status')
+                    ->label($lblStatus)
                     ->badge()
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'hadir' => 'Hadir',
-                        'tidak_hadir_dengan_keterangan' => 'Izin/Sakit',
-                        'tidak_hadir_tanpa_keterangan' => 'Tanpa Keterangan',
+                        'hadir' => match ($locale) {
+                            'en' => 'Present',
+                            'ar' => 'حاضر',
+                            default => 'Hadir',
+                        },
+                        'tidak_hadir_dengan_keterangan' => match ($locale) {
+                            'en' => 'Excused / Sick',
+                            'ar' => 'إذن / مرضي',
+                            default => 'Izin/Sakit',
+                        },
+                        'tidak_hadir_tanpa_keterangan' => match ($locale) {
+                            'en' => 'Unexcused',
+                            'ar' => 'بدون عذر',
+                            default => 'Tanpa Keterangan',
+                        },
                         default => $state,
                     })
                     ->color(fn (string $state): string => match ($state) {
@@ -49,7 +87,7 @@ class LatestPresensiWidget extends TableWidget
                     }),
 
                 TextColumn::make('uraian_aktivitas')
-                    ->label('Uraian Aktivitas')
+                    ->label($lblActivity)
                     ->limit(45)
                     ->placeholder('—')
                     ->tooltip(fn ($record) => $record->uraian_aktivitas),

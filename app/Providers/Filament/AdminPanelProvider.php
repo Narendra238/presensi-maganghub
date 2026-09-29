@@ -14,13 +14,14 @@ use Filament\Support\Colors\Color;
 use Filament\Support\Icons\Heroicon;
 use App\Filament\Pages\Auth\EditProfile;
 use Filament\Widgets\AccountWidget;
-use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Prunacatalin\FilamentLocaleSwitcher\Http\Middleware\ApplyLocale;
+use Prunacatalin\FilamentLocaleSwitcher\LocaleSwitchPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -36,8 +37,14 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('Balai Diklat Industri Yogyakarta')
             ->darkMode(true)
             ->themeSwitcher(true)
+            ->plugin(LocaleSwitchPlugin::make())
             ->navigationItems([
-                NavigationItem::make('Profil Saya')
+                NavigationItem::make('profile')
+                    ->label(fn (): string => match (app()->getLocale()) {
+                        'en' => 'My Profile',
+                        'ar' => 'الملف الشخصي',
+                        default => 'Profil Saya',
+                    })
                     ->url(fn (): string => \Filament\Facades\Filament::getProfileUrl())
                     ->icon(Heroicon::OutlinedUserCircle)
                     ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.auth.profile'))
@@ -65,6 +72,7 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                ApplyLocale::class,
             ])
             ->authMiddleware([
                 Authenticate::class,

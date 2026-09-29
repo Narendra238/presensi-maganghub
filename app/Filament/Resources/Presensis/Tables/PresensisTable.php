@@ -17,16 +17,37 @@ class PresensisTable
         return $table
             ->columns([
                 TextColumn::make('tanggal')
+                    ->label(fn () => match (app()->getLocale()) {
+                        'en' => 'Date',
+                        'ar' => 'التاريخ',
+                        default => 'Tanggal',
+                    })
                     ->date('d M Y')
                     ->sortable(),
 
                 TextColumn::make('kehadiran')
-                    ->label('Status')
+                    ->label(fn () => match (app()->getLocale()) {
+                        'en' => 'Status',
+                        'ar' => 'الحالة',
+                        default => 'Status',
+                    })
                     ->badge()
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'hadir' => 'Hadir',
-                        'tidak_hadir_dengan_keterangan' => 'Tidak Hadir (Keterangan)',
-                        'tidak_hadir_tanpa_keterangan' => 'Tidak Hadir (Tanpa Keterangan)',
+                        'hadir' => match (app()->getLocale()) {
+                            'en' => 'Present',
+                            'ar' => 'حاضر',
+                            default => 'Hadir',
+                        },
+                        'tidak_hadir_dengan_keterangan' => match (app()->getLocale()) {
+                            'en' => 'Excused / Sick',
+                            'ar' => 'إذن / مرضي',
+                            default => 'Tidak Hadir (Keterangan)',
+                        },
+                        'tidak_hadir_tanpa_keterangan' => match (app()->getLocale()) {
+                            'en' => 'Unexcused',
+                            'ar' => 'بدون عذر',
+                            default => 'Tidak Hadir (Tanpa Keterangan)',
+                        },
                         default => $state,
                     })
                     ->color(fn (string $state): string => match ($state) {
@@ -38,27 +59,47 @@ class PresensisTable
                     ->sortable(),
 
                 TextColumn::make('uraian_aktivitas')
-                    ->label('Aktivitas')
+                    ->label(fn () => match (app()->getLocale()) {
+                        'en' => 'Activity Description',
+                        'ar' => 'وصف النشاط',
+                        default => 'Aktivitas',
+                    })
                     ->limit(30)
                     ->searchable(),
 
                 TextColumn::make('pembelajaran')
-                    ->label('Pembelajaran')
+                    ->label(fn () => match (app()->getLocale()) {
+                        'en' => 'Learnings Acquired',
+                        'ar' => 'الدروس المستفادة',
+                        default => 'Pembelajaran',
+                    })
                     ->limit(30),
 
                 TextColumn::make('kendala')
-                    ->label('Kendala')
+                    ->label(fn () => match (app()->getLocale()) {
+                        'en' => 'Obstacles',
+                        'ar' => 'المعوقات',
+                        default => 'Kendala',
+                    })
                     ->limit(30)
                     ->default('-'),
 
                 TextColumn::make('keterangan')
-                    ->label('Keterangan')
+                    ->label(fn () => match (app()->getLocale()) {
+                        'en' => 'Reason / Notes',
+                        'ar' => 'الملاحظات / السبب',
+                        default => 'Keterangan',
+                    })
                     ->limit(30)
                     ->default('-')
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('created_at')
-                    ->label('Dibuat')
+                    ->label(fn () => match (app()->getLocale()) {
+                        'en' => 'Created At',
+                        'ar' => 'تاريخ الإنشاء',
+                        default => 'Dibuat',
+                    })
                     ->dateTime('d/m/Y H:i')
                     ->toggleable(isToggledHiddenByDefault: true),
             ])

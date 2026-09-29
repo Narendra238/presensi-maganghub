@@ -11,11 +11,25 @@ class PeriodeComparisonChart extends ChartWidget
 {
     protected static ?int $sort = 3;
 
-    protected ?string $heading = 'Perbandingan Kehadiran Antar Periode';
-
-    protected ?string $description = 'Konsistensi kehadiran per periode monev magang';
-
     protected ?string $maxHeight = '300px';
+
+    public function getHeading(): ?string
+    {
+        return match (app()->getLocale()) {
+            'en' => 'Inter-Period Attendance Comparison',
+            'ar' => 'مقارنة الحضور بين الفترات',
+            default => 'Perbandingan Kehadiran Antar Periode',
+        };
+    }
+
+    public function getDescription(): ?string
+    {
+        return match (app()->getLocale()) {
+            'en' => 'Attendance consistency across internship monev periods',
+            'ar' => 'مدى انتظام الحضور عبر فترات متابعة التدريب',
+            default => 'Konsistensi kehadiran per periode monev magang',
+        };
+    }
 
     /**
      * Tipe chart: Bar (batang vertikal).
@@ -35,13 +49,18 @@ class PeriodeComparisonChart extends ChartWidget
         $userId = Auth::id();
         $holidays = config('holidays', []);
         $periods = config('magang.periods', []);
+        $locale = app()->getLocale();
 
         $labels = [];
         $hadirData = [];
         $targetData = [];
 
-        foreach ($periods as $p) {
-            $labels[] = $p['name']; // "Periode 1", "Periode 2", dst.
+        foreach ($periods as $key => $p) {
+            $labels[] = match ($locale) {
+                'en' => "Period {$key}",
+                'ar' => "الفترة {$key}",
+                default => $p['name'],
+            };
 
             // Hitung target hari kerja untuk periode ini
             $workdays = $this->countWorkdays($p['start'], $p['end']);
@@ -55,10 +74,22 @@ class PeriodeComparisonChart extends ChartWidget
             $hadirData[] = $hadir;
         }
 
+        $lblHadir = match ($locale) {
+            'en' => 'Days Attended',
+            'ar' => 'أيام الحضور',
+            default => 'Hari Hadir',
+        };
+
+        $lblTarget = match ($locale) {
+            'en' => 'Target Workdays',
+            'ar' => 'أيام العمل المستهدفة',
+            default => 'Target Hari Kerja',
+        };
+
         return [
             'datasets' => [
                 [
-                    'label' => 'Hari Hadir',
+                    'label' => $lblHadir,
                     'data' => $hadirData,
                     'backgroundColor' => '#10B981',    // Emerald-500
                     'borderColor' => '#059669',         // Emerald-600
@@ -66,7 +97,7 @@ class PeriodeComparisonChart extends ChartWidget
                     'borderRadius' => 4,
                 ],
                 [
-                    'label' => 'Target Hari Kerja',
+                    'label' => $lblTarget,
                     'data' => $targetData,
                     'backgroundColor' => 'rgba(59, 130, 246, 0.25)', // Blue-500 transparan
                     'borderColor' => '#3B82F6',                       // Blue-500
