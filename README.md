@@ -260,5 +260,5 @@ Proyek ini dilisensikan di bawah [Lisensi MIT](LICENSE). Anda bebas menggunakann
 ---
 
 <div align="center">
-  Dibuat dengan ❤️ untuk monitoring kegiatan magang di <b>Balai Diklat Industri Yogyakarta</b>.
+  Dari Muhammad Narendra Hawari Dibuat dengan ❤️ untuk monitoring kegiatan magang di <b>Balai Diklat Industri Yogyakarta</b>.
 </div>
