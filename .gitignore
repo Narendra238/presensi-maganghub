@@ -1,8 +1,10 @@
 *.log
 .DS_Store
 .env
-.env.backup
-.env.production
+.env.*
+!.env.example
+*.sqlite
+*.sqlite-journal
 .phpactor.json
 .phpunit.result.cache
 /.codex
