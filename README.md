@@ -1,6 +1,7 @@
 <div align="center">
 
 # 📋 Monev Presensi & Jurnal MagangHub
+# TIDAK AKAN LUPA LAGI, UANG SAKU AMAN !
 ### Balai Diklat Industri Yogyakarta (BDI Yogyakarta)
 
 ![PHP](https://img.shields.io/badge/PHP-%5E8.3-777BB4?style=for-the-badge&logo=php&logoColor=white)

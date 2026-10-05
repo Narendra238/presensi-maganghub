@@ -195,7 +195,7 @@
                 <div class="relative group flex-shrink-0">
                     <div class="w-32 h-32 sm:w-36 sm:h-36 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 border-2 border-blue-500/30 p-1 shadow-md">
                         <img 
-                            src="{{ asset('images/PP.png') }}" 
+                            src="{{ file_exists(public_path('images/PP.png')) ? asset('images/PP.png') : 'https://ui-avatars.com/api/?name=Muhammad+Narendra+Hawari&background=2563eb&color=fff&size=256&bold=true' }}" 
                             alt="Muhammad Narendra Hawari" 
                             onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Muhammad+Narendra+Hawari&background=2563eb&color=fff&size=256&bold=true';"
                             class="w-full h-full object-cover rounded-xl"
