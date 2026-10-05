@@ -11,7 +11,7 @@
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
 <p align="center">
-  Aplikasi Monitoring & Evaluasi (Monev), Presensi Harian, dan Jurnal / Logbook Kegiatan MagangHub berbasis web untuk peserta magang di Balai Diklat Industri Yogyakarta.
+  Aplikasi Monitoring & Evaluasi (Monev), Presensi Harian, dan Jurnal / Logbook Kegiatan Magang berbasis web. <b>Dapat disesuaikan untuk berbagai instansi, perusahaan, dan posisi magang apa pun.</b>
 </p>
 
 [Fitur Utama](#-fitur-utama) •
@@ -19,6 +19,7 @@
 [Prasyarat](#-prasyarat-sistem) •
 [Instalasi](#-panduan-instalasi) •
 [Konfigurasi](#-konfigurasi) •
+[Kustomisasi Instansi & Posisi](#-kustomisasi-instansi-perusahaan--posisi-opsional) •
 [Keamanan](#-keamanan--best-practices) •
 [Lisensi](#-lisensi)
 
@@ -28,9 +29,12 @@
 
 ## 📌 Tentang Proyek
 
-**Presensi MagangHub BDI** adalah sistem presensi digital dan logbook terpadu yang dirancang khusus untuk mempermudah peserta magang dalam mencatat kehadiran harian, mendokumentasikan hasil belajar, serta memantau progres pelaksanaan magang selama 6 periode evaluasi secara transparan dan akuntabel.
+**Presensi MagangHub** adalah sistem presensi digital dan logbook terpadu yang dirancang khusus untuk mempermudah peserta magang dalam mencatat kehadiran harian, mendokumentasikan hasil belajar, serta memantau progres pelaksanaan magang selama 6 periode evaluasi secara transparan dan akuntabel.
 
 Sistem ini dilengkapi dengan dashboard analitik modern, kalkulator otomatis estimasi tunjangan/uang saku magang berbasis UMR, penghitung hari kerja efektif (mempertimbangkan kalender libur nasional), dan dukungan multi-bahasa.
+
+> 💡 **Fleksibel & Multi-Instansi (Opsional)**:
+> Meskipun proyek ini menggunakan contoh default *Balai Diklat Industri (BDI) Yogyakarta* dan posisi *Data Analyst Intern*, aplikasi ini **bersifat sepenuhnya terbuka dan fleksibel**. Anda dapat menggunakannya untuk instansi pemerintah lain, BUMN, startup, maupun perusahaan swasta di posisi magang apa pun. Tersedia [Prompt AI Siap Pakai](#-prompt-siap-pakai-copy-paste-untuk-ai-assistant) agar Anda dapat langsung mengubahnya secara instan!
 
 ---
 
@@ -191,6 +195,61 @@ return [
 
 ---
 
+## 🎨 Kustomisasi Instansi, Perusahaan & Posisi (Opsional)
+
+Aplikasi ini tidak terkunci hanya untuk **BDI Yogyakarta** ataupun posisi **Data Analyst**. Anda dapat menyesuaikan identitas instansi, perusahaan, posisi magang, hingga nominal uang saku dan rentang tanggal kegiatan sesuai tempat Anda magang.
+
+### 📋 Komponen yang Dapat Disesuaikan:
+
+1. **Branding & Identitas Landing Page** ([resources/views/welcome.blade.php](resources/views/welcome.blade.php)):
+   - Nama Peserta Magang
+   - Posisi / Role Magang (misal: *Web Developer*, *UI/UX Designer*, *Digital Marketing*, dll.)
+   - Nama Instansi / Perusahaan (misal: *PT Telkom Indonesia*, *Dinas Kominfo*, dll.)
+   - Deskripsi singkat dan badge institusi
+2. **Nama Instansi di Panel Filament Dashboard** ([app/Providers/Filament/AdminPanelProvider.php](app/Providers/Filament/AdminPanelProvider.php)):
+   - Ganti baris `->brandName('Nama Instansi Anda')`
+3. **Periode Magang & Estimasi Uang Saku** ([config/magang.php](config/magang.php) & [.env](.env)):
+   - `tanggal_mulai` dan `tanggal_selesai` program magang
+   - Rentang tanggal untuk 6 periode Monev (`periods` 1 s.d. 6)
+   - `MAGANG_UANG_SAKU_PER_PERIODE` (disesuaikan dengan UMR wilayah atau ketentuan instansi)
+4. **Kalender Libur & Cuti Bersama** ([config/holidays.php](config/holidays.php)):
+   - Sesuaikan tanggal libur nasional dan cuti bersama sesuai tahun program magang berlangsung
+
+---
+
+### 🤖 Prompt Siap Pakai (Copy-Paste untuk AI Assistant)
+
+Ingin mengubah seluruh data instansi dan posisi magang secara otomatis tanpa perlu mengedit file satu per satu? 
+Cukup salin (*copy*) template prompt di bawah ini, isi data Anda, lalu tempel (*paste*) ke AI Assistant Anda (Gemini, Antigravity, ChatGPT, Claude, atau Cursor):
+
+```text
+Halo AI! Tolong sesuaikan proyek Presensi MagangHub ini agar sesuai dengan data instansi dan posisi magang saya. Berikut adalah rincian data baru saya:
+
+1. Nama Lengkap: [GANTI: Nama Anda, misal: Muhammad Fikri]
+2. Instansi / Perusahaan: [GANTI: misal: PT Telkom Indonesia / Dinas Kominfo Provinsi / Bank Mandiri]
+3. Singkatan Instansi (opsional): [GANTI: misal: Telkom / Kominfo / Mandiri]
+4. Posisi Magang: [GANTI: misal: Fullstack Web Developer / UI-UX Designer / Digital Marketing]
+5. Tanggal Pelaksanaan Magang:
+   - Tanggal Mulai: [GANTI: YYYY-MM-DD, misal: 2026-09-01]
+   - Tanggal Selesai: [GANTI: YYYY-MM-DD, misal: 2027-02-28]
+6. Nominal Uang Saku per Periode (UMR/Saku): [GANTI: misal: Rp 3.500.000]
+
+Instruksi pengerjaan:
+1. Perbarui `config/magang.php`:
+   - Ganti `tanggal_mulai` dan `tanggal_selesai`.
+   - Bagi rentang tanggal tersebut menjadi 6 periode monev berurutan pada array `periods` (1 sampai 6) lengkap dengan start, end, dan label.
+2. Perbarui file `.env` dan `.env.example`:
+   - Sesuaikan nilai `MAGANG_UANG_SAKU_PER_PERIODE` dan `APP_NAME`.
+3. Perbarui `app/Providers/Filament/AdminPanelProvider.php`:
+   - Ubah `->brandName(...)` agar menampilkan nama instansi baru.
+4. Perbarui `resources/views/welcome.blade.php`:
+   - Ganti nama peserta, posisi magang, dan nama instansi di hero banner, badge informasi, ringkasan arsip, dan footer.
+   - Sesuaikan logika multibahasa (ID, EN, AR) untuk posisi dan nama instansi.
+5. Pastikan semua perubahan rapi, tidak merusak sintaks kode, dan tetap mempertahankan fungsionalitas presensi serta dashboard.
+```
+
+---
+
 ## 🛡️ Keamanan & Best Practices (Sebelum Publish / Deploy)
 
 Jika Anda berencana mempublikasikan repositori ini atau melakukan deployment:
@@ -261,5 +320,5 @@ Proyek ini dilisensikan di bawah [Lisensi MIT](LICENSE). Anda bebas menggunakann
 ---
 
 <div align="center">
-  Dari Muhammad Narendra Hawari Dibuat dengan ❤️ untuk monitoring kegiatan magang di <b>Balai Diklat Industri Yogyakarta</b>.
+  Dibuat dengan ❤️ oleh Muhammad Narendra Hawari • Dirancang fleksibel untuk monitoring kegiatan magang di instansi/perusahaan mana pun.
 </div>
