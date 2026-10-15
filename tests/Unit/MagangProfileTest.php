@@ -60,26 +60,26 @@ class MagangProfileTest extends TestCase
     {
         config([
             'magang.title_front' => 'Ir.',
-            'magang.user_name' => 'John Doe',
+            'magang.user_name' => 'Maulana Habibie',
             'magang.title_rear' => 'M.T.',
         ]);
 
-        $this->assertEquals('Ir. John Doe, M.T.', MagangProfile::fullName());
+        $this->assertEquals('Ir. Maulana Habibie, M.T.', MagangProfile::fullName());
     }
 
     /**
      * Test format nama tanpa gelar (gelar depan & belakang kosong).
-     * Contoh: Budi Santoso
+     * Contoh: Parjo
      */
     public function test_it_formats_full_name_without_titles(): void
     {
         config([
             'magang.title_front' => '',
-            'magang.user_name' => 'Budi Santoso',
+            'magang.user_name' => 'Parjo',
             'magang.title_rear' => '',
         ]);
 
-        $this->assertEquals('Budi Santoso', MagangProfile::fullName());
+        $this->assertEquals('Parjo', MagangProfile::fullName());
     }
 
     /**
