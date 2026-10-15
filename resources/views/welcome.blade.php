@@ -1,3 +1,7 @@
+@php
+    $userName = $userName ?? \App\Support\MagangProfile::name();
+    $userFullName = $userFullName ?? \App\Support\MagangProfile::fullName();
+@endphp
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="dark">
 <head>
@@ -195,9 +199,9 @@
                 <div class="relative group flex-shrink-0">
                     <div class="w-32 h-32 sm:w-36 sm:h-36 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 border-2 border-blue-500/30 p-1 shadow-md">
                         <img 
-                            src="{{ file_exists(public_path('images/PP.png')) ? asset('images/PP.png') : 'https://ui-avatars.com/api/?name=Muhammad+Narendra+Hawari&background=2563eb&color=fff&size=256&bold=true' }}" 
-                            alt="Muhammad Narendra Hawari" 
-                            onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Muhammad+Narendra+Hawari&background=2563eb&color=fff&size=256&bold=true';"
+                            src="{{ file_exists(public_path('images/PP.png')) ? asset('images/PP.png') : 'https://ui-avatars.com/api/?name=' . urlencode($userName) . '&background=2563eb&color=fff&size=256&bold=true' }}" 
+                            alt="{{ $userFullName }}" 
+                            onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode($userName) }}&background=2563eb&color=fff&size=256&bold=true';"
                             class="w-full h-full object-cover rounded-xl"
                         >
                     </div>
@@ -215,7 +219,7 @@
                     
                     <div>
                         <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                            Muhammad Narendra Hawari
+                            {{ $userFullName }}
                         </h1>
                         <p class="text-sm font-semibold text-blue-600 dark:text-blue-400 mt-0.5">
                             {{ match(app()->getLocale()) { 'en' => 'Data Analyst Intern', 'ar' => 'متدرب محلل بيانات', default => 'Data Analyst Intern' } }}
@@ -380,7 +384,7 @@
 
     <!-- Footer -->
     <footer class="w-full border-t border-slate-200 dark:border-slate-800 py-6 text-center text-xs text-slate-500 dark:text-slate-400">
-        &copy; {{ date('Y') }} Muhammad Narendra Hawari &bull; {{ match(app()->getLocale()) { 'en' => 'Monev MagangHub BDI Yogyakarta Tracker', 'ar' => 'نظام متابعة التدريب MagangHub معهد BDI بيوغياكارتا', default => 'Monev MagangHub BDI Yogyakarta Tracker' } }}
+        &copy; {{ date('Y') }} {{ $userFullName }} &bull; {{ match(app()->getLocale()) { 'en' => 'Monev MagangHub BDI Yogyakarta Tracker', 'ar' => 'نظام متابعة التدريب MagangHub معهد BDI بيوغياكارتا', default => 'Monev MagangHub BDI Yogyakarta Tracker' } }}
     </footer>
 
     <!-- Script Theme Toggle & Kalender Periode -->

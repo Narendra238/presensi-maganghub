@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Presensi;
+use App\Support\MagangProfile;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -32,6 +33,8 @@ Route::get('/', function () {
     }
 
     $hariLibur = config('holidays', []);
+    $userName = MagangProfile::name();
+    $userFullName = MagangProfile::fullName();
 
-    return view('welcome', compact('sudahPresensi', 'totalLaporan', 'laporanTerbaru', 'tanggalTerisi', 'hariLibur'));
+    return view('welcome', compact('sudahPresensi', 'totalLaporan', 'laporanTerbaru', 'tanggalTerisi', 'hariLibur', 'userName', 'userFullName'));
 });

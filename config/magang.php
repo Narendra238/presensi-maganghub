@@ -1,5 +1,10 @@
 <?php
 return [
+    // Identitas Profil Pengguna / Peserta Magang di Front-End
+    'user_name' => env('USER_NAME', env('MAGANG_USER_NAME', env('NAMA_USER', env('NamaUser', 'Muhammad Narendra Hawari')))),
+    'title_front' => env('USER_TITLE_FRONT', env('MAGANG_USER_TITLE_FRONT', env('TITLE_FRONT', env('Title_Front', '')))),
+    'title_rear' => env('USER_TITLE_REAR', env('MAGANG_USER_TITLE_REAR', env('TITLE_REAR', env('Title_rear', 'S.Kom')))),
+
     // Nominal uang saku per 1 periode magang (mengacu UMR Yogyakarta)
     'uang_saku_per_periode' => (int) env('MAGANG_UANG_SAKU_PER_PERIODE', 2827000),
 
