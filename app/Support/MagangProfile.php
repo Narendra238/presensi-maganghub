@@ -9,7 +9,7 @@ class MagangProfile
      */
     public static function name(): string
     {
-        return (string) config('magang.user_name', 'Muhammad Narendra Hawari');
+        return (string) config('magang.user_name', 'Peserta Magang');
     }
 
     /**
